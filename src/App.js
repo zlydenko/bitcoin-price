@@ -19,12 +19,27 @@ class App extends Component {
             data.status.timestamp * 1000
           )}`
         );
-        data.data.quotes.USD.price ===
-        this.state.data[this.state.data.length - 1]
-          ? null
-          : this.setState({
-              data: [...this.state.data, data.data.quotes.USD.price]
-            });
+
+        if (this.state.data.length === 0) {
+          this.setState({
+            data: [
+              {
+                x: data.data.quotes.USD.price,
+                y: data.status.timestamp
+              }
+            ]
+          });
+        } else if (
+          data.data.quotes.USD.price !==
+          this.state.data[this.state.data.length - 1].x
+        ) {
+          this.setState({
+            data: [
+              ...this.state.data,
+              { x: data.data.quotes.USD.price, y: data.status.timestamp }
+            ]
+          });
+        }
       })
       .catch(err => console.log(err));
   };
@@ -39,17 +54,18 @@ class App extends Component {
   }
 
   render() {
-    const current = this.state.data[this.state.data.length - 1];
-    const prev = this.state.data[this.state.data.length - 2];
+    const { data } = this.state;
+    const newPrice = data[data.length - 1];
+    const prevPrice = data[data.length - 2];
 
-    if (this.state.data.length === 0) {
+    if (data.length === 0) {
       return <Loading />;
-    } else if (!prev || prev === current) {
-      return <Text>{formatPrice(current)}</Text>;
-    } else if (prev > current) {
-      return <Fall>{formatPrice(current)}</Fall>;
-    } else if (prev < current) {
-      return <Rise>{formatPrice(current)}</Rise>;
+    } else if (!prevPrice || prevPrice.x === newPrice.x) {
+      return <Text>{formatPrice(newPrice.x)}</Text>;
+    } else if (prevPrice.x > newPrice.x) {
+      return <Fall>{formatPrice(newPrice.x)}</Fall>;
+    } else if (prevPrice.x < newPrice.x) {
+      return <Rise>{formatPrice(newPrice.x)}</Rise>;
     }
   }
 }
