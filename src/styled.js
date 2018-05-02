@@ -78,3 +78,69 @@ export const Fall = props => (
     {props.children}
   </FallText>
 );
+
+const Wrapper = styled.div`
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+`;
+
+const Content = styled.div`
+  width: 100%;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`;
+
+const Bottom = styled.div`
+  margin-top: -20px;
+  height: 1000px;
+  width: 100%;
+  background-color: rgb(25, 27, 42);
+`;
+
+const Top = styled.div`
+  height: 100px;
+  background-color: rgb(20, 19, 33);
+`;
+
+const Svg = styled.svg`
+  background-color: rgb(20, 19, 33);
+`;
+
+export const Background = props => (
+  <Wrapper>
+    <Content>{props.children}</Content>
+    <Top />
+    <Svg
+      viewBox="0 -50 700 100"
+      width="100%"
+      height="200"
+      preserveAspectRatio="none"
+    >
+      <path
+        d="M0,10 c80,-22 240,0 350,18 c90,17 260,7.5 350,-20 v50 h-700"
+        fill="rgb(25,27,42)"
+      />
+    </Svg>
+    <Bottom />
+  </Wrapper>
+);
+
+export const Data = styled.section`
+  height: calc(100vh-300px);
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+`;
+
+export const HistoryData = styled.div``;
+
+export const Price = styled.div`
+  text-align: right;
+  color: white;
+`;
