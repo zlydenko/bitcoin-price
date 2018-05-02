@@ -1,11 +1,9 @@
 import React, { Component, Fragment } from "react";
-import styled, { keyframes } from "styled-components";
-import "../node_modules/react-vis/dist/style.css";
+
 import { Loading, Text, Fall, Rise } from "./styled";
 import formatPrice from "./utils";
-import { XYPlot, makeWidthFlexible, GradientDefs, LineSeries } from "react-vis";
 
-const FlexibleXYPlot = makeWidthFlexible(XYPlot);
+import Chart from "./Chart";
 
 class App extends Component {
   state = {
@@ -78,80 +76,30 @@ class App extends Component {
   }
 
   render() {
-    const { data } = this.state;
-    const newPrice = data[data.length - 1];
-    const prevPrice = data[data.length - 2];
+    const { data, history } = this.state;
+    const next = data[data.length - 1];
+    const prev = data[data.length - 2];
 
-    const gradient = (
-      <GradientDefs>
-        <linearGradient
-          id="myGradient"
-          gradientUnits="userSpaceOnUse"
-          x1="0"
-          y1="0"
-          x2="500"
-          y2="500"
-        >
-          <stop offset="0%" stopColor="#EDDE5D" />
-          <stop offset="25%" stopColor="gold" />
-          <stop offset="55%" stopColor="#fe8c00" />
-          <stop offset="100%" stopColor="#f83600" />
-        </linearGradient>
-      </GradientDefs>
+    return (
+      <Fragment>
+        {data.length === 0 ? (
+          <Loading />
+        ) : (
+          <Fragment>
+            {prev === undefined ? (
+              <Text>{formatPrice(next.x)}</Text>
+            ) : (
+              <Fragment>
+                {prev.x === next.x && <Text>{formatPrice(next.x)}</Text>}
+                {prev.x > next.x && <Fall>{formatPrice(next.x)}</Fall>}
+                {prev.x < next.x && <Rise>{formatPrice(next.x)}</Rise>}
+              </Fragment>
+            )}
+          </Fragment>
+        )}
+        {history && <Chart data={history} />}
+      </Fragment>
     );
-
-    if (data.length === 0) {
-      return <Loading />;
-    } else if (!prevPrice || prevPrice.x === newPrice.x) {
-      return (
-        <Fragment>
-          <Text>{formatPrice(newPrice.x)}</Text>
-          <div>
-            {this.state.history && (
-              <FlexibleXYPlot height={200}>
-                {gradient}
-                <LineSeries
-                  data={this.state.history}
-                  color={"url(#myGradient)"}
-                  style={{
-                    strokeWidth: "7px",
-                    opacity: "0.8"
-                  }}
-                />
-              </FlexibleXYPlot>
-            )}
-          </div>
-        </Fragment>
-      );
-    } else if (prevPrice.x > newPrice.x) {
-      return (
-        <Fragment>
-          <Fall>{formatPrice(newPrice.x)}</Fall>
-          <div>
-            {this.state.history && (
-              <FlexibleXYPlot height={200}>
-                {gradient}
-                <LineSeries data={this.state.history} color={"powderblue"} />
-              </FlexibleXYPlot>
-            )}
-          </div>
-        </Fragment>
-      );
-    } else if (prevPrice.x < newPrice.x) {
-      return (
-        <Fragment>
-          <Rise>{formatPrice(newPrice.x)}</Rise>
-          <div>
-            {this.state.history && (
-              <FlexibleXYPlot height={200}>
-                {gradient}
-                <LineSeries data={this.state.history} color={"powderblue"} />
-              </FlexibleXYPlot>
-            )}
-          </div>
-        </Fragment>
-      );
-    }
   }
 }
 
