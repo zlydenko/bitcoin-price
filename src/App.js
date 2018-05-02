@@ -9,6 +9,8 @@ class App extends Component {
   state = {
     history: [],
     data: [],
+    marketCap: {},
+    volume: {},
     intervalId: {}
   };
 
@@ -24,6 +26,8 @@ class App extends Component {
 
         if (this.state.data.length === 0) {
           this.setState({
+            marketCap: data.data.quotes.USD.market_cap,
+            volume: data.data.quotes.USD.volume_24h,
             data: [
               {
                 x: data.data.quotes.USD.price,
@@ -67,7 +71,7 @@ class App extends Component {
 
   componentDidMount() {
     this.getHistory();
-    const timer = setInterval(this.getData, 5000);
+    const timer = setInterval(this.getData, 10000);
     this.setState({ intervalId: timer });
   }
 
