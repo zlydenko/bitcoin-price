@@ -1,5 +1,6 @@
 {
-  "name": "pricechart",
+  "name": "bitcoinprice",
+  "description": "simple bitcoin price status",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
