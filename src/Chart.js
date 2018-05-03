@@ -4,7 +4,6 @@ import "../node_modules/react-vis/dist/style.css";
 import styled from "styled-components";
 
 const Wrapper = styled.section`
-  background-color: peachpuff;
   margin-bottom: -2.5em;
   width: 100%;
 `;

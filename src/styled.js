@@ -36,9 +36,6 @@ const Arrow = styled.span`
 export const Text = styled.p`
   font-size: 3em;
   text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   animation: ${FadeIn} 0.7s linear 1;
 `;
 
@@ -67,15 +64,15 @@ const ArrowDown = () => <Arrow>&#129067;</Arrow>;
 
 export const Rise = props => (
   <RiseText>
-    <ArrowUp />
     {props.children}
+    <ArrowUp />
   </RiseText>
 );
 
 export const Fall = props => (
   <FallText>
-    <ArrowDown />
     {props.children}
+    <ArrowDown />
   </FallText>
 );
 
@@ -131,16 +128,34 @@ export const Background = props => (
   </Wrapper>
 );
 
-export const Data = styled.section`
-  height: calc(100vh-300px);
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
+export const Data = styled.section``;
+
+export const HistoryData = styled.div`
+  margin-top: 2em;
+  padding: 0em 1em;
+  text-align: center;
+  color: rgb(67, 66, 80);
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 1.3em;
+
+  & p {
+    display: flex;
+    justify-content: space-between;
+
+    & span:nth-child(2n) {
+      color: rgb(255, 255, 255);
+      letter-spacing: 0.05em;
+    }
+  }
 `;
 
-export const HistoryData = styled.div``;
-
 export const Price = styled.div`
-  text-align: right;
+  font-family: "Hack", "Fira Code", monospace;
   color: white;
+
+  & sup {
+    font-size: 0.7em;
+    color: rgb(67, 66, 80);
+  }
 `;

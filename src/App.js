@@ -102,18 +102,42 @@ class App extends Component {
             <Fragment>
               <Price>
                 {prev === undefined ? (
-                  <Text>{formatPrice(next.x)}</Text>
+                  <Text>
+                    <sup>$</sup>
+                    {formatPrice(next.x)}
+                  </Text>
                 ) : (
                   <Fragment>
-                    {prev.x === next.x && <Text>{formatPrice(next.x)}</Text>}
-                    {prev.x > next.x && <Fall>{formatPrice(next.x)}</Fall>}
-                    {prev.x < next.x && <Rise>{formatPrice(next.x)}</Rise>}
+                    {prev.x === next.x && (
+                      <Text>
+                        <sup>$</sup>
+                        {formatPrice(next.x)}
+                      </Text>
+                    )}
+                    {prev.x > next.x && (
+                      <Fall>
+                        <sup>$</sup>
+                        {formatPrice(next.x)}
+                      </Fall>
+                    )}
+                    {prev.x < next.x && (
+                      <Rise>
+                        <sup>$</sup>
+                        {formatPrice(next.x)}
+                      </Rise>
+                    )}
                   </Fragment>
                 )}
               </Price>
               <HistoryData>
-                <p>{marketCap}</p>
-                <p>{volume}</p>
+                <p>
+                  <span>{"Market cap"}</span>
+                  <span>{formatPrice(marketCap)}</span>
+                </p>
+                <p>
+                  <span>{"Volume 24h"}</span>
+                  <span>{formatPrice(volume)}</span>
+                </p>
               </HistoryData>
             </Fragment>
           )}
