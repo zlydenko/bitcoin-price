@@ -66,7 +66,7 @@ class App extends Component {
       .then(res => res.json())
       .then(data => {
         const arr = data.Data.map(value => {
-          return [value.time, value.close];
+          return { x: value.time, y: value.close };
         });
         console.log(arr);
         this.setState({
