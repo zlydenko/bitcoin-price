@@ -142,7 +142,7 @@ class App extends Component {
             </Fragment>
           )}
         </Data>
-        {history && <Chart data={history} />}
+        {history && <p>sdsa</p>}
       </Background>
     );
   }
