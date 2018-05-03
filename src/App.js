@@ -66,14 +66,11 @@ class App extends Component {
       .then(res => res.json())
       .then(data => {
         const arr = data.Data.map(value => {
-          return {
-            x: value.time,
-            y: value.close
-          };
+          return [value.time, value.close];
         });
         console.log(arr);
         this.setState({
-          history: arr
+          history: [...arr]
         });
       });
   };
@@ -142,7 +139,7 @@ class App extends Component {
             </Fragment>
           )}
         </Data>
-        {history && <p>sdsa</p>}
+        {history && <Chart data={history} />}
       </Background>
     );
   }
