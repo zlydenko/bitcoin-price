@@ -27,12 +27,6 @@ class App extends Component {
     fetch("https://api.coinmarketcap.com/v2/ticker/1/")
       .then(res => res.json())
       .then(data => {
-        console.log(
-          `data: ${data.data.quotes.USD.price}$ at ${new Date(
-            data.metadata.timestamp * 1000
-          )}`
-        );
-
         if (this.state.data.length === 0) {
           this.setState({
             marketCap: data.data.quotes.USD.market_cap,
@@ -68,7 +62,6 @@ class App extends Component {
         const arr = data.Data.map(value => {
           return { x: value.time, y: value.close };
         });
-        console.log(arr);
         this.setState({
           history: [...arr]
         });

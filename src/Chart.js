@@ -1,5 +1,4 @@
 import React from "react";
-import styled from "styled-components";
 import { AreaChart } from "react-easy-chart";
 
 export default class Chart extends React.Component {
