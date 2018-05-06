@@ -1,11 +1,11 @@
 import React, { Component, Fragment } from "react";
+import { RingLoader } from "react-spinners";
 import "./index.css";
 import {
   Price,
   HistoryData,
   Data,
   Background,
-  Loading,
   Text,
   Fall,
   Rise
@@ -20,7 +20,8 @@ class App extends Component {
     data: [],
     marketCap: {},
     volume: {},
-    intervalId: {}
+    intervalId: {},
+    loading: true
   };
 
   getData = () => {
@@ -29,6 +30,7 @@ class App extends Component {
       .then(data => {
         if (this.state.data.length === 0) {
           this.setState({
+            loading: false,
             marketCap: data.data.quotes.USD.market_cap,
             volume: data.data.quotes.USD.volume_24h,
             data: [
@@ -79,16 +81,25 @@ class App extends Component {
   }
 
   render() {
-    const { data, history, marketCap, volume } = this.state;
+    const { data, history, marketCap, volume, loading } = this.state;
     const next = data[data.length - 1];
     const prev = data[data.length - 2];
 
     return (
       <Background>
         <Data>
-          {data.length === 0 ? (
-            <Loading />
-          ) : (
+          {loading && (
+            <div
+              style={{
+                marginTop: "4em",
+                display: "flex",
+                justifyContent: "center"
+              }}
+            >
+              <RingLoader style={{}} color={"#B10DC9"} loading={loading} />
+            </div>
+          )}
+          {data.length !== 0 && (
             <Fragment>
               <Price>
                 {prev === undefined ? (
@@ -122,17 +133,18 @@ class App extends Component {
               <HistoryData>
                 <p>
                   <span>{"Market cap"}</span>
-                  <span>{formatPrice(marketCap)}</span>
+                  <span>{`${formatPrice(marketCap)}$`}</span>
                 </p>
                 <p>
                   <span>{"Volume 24h"}</span>
-                  <span>{formatPrice(volume)}</span>
+                  <span>{`${formatPrice(volume)}$`}</span>
                 </p>
               </HistoryData>
             </Fragment>
           )}
+
+          {history && <Chart data={history} />}
         </Data>
-        {history && <Chart data={history} />}
       </Background>
     );
   }

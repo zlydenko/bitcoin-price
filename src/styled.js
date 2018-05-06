@@ -11,41 +11,14 @@ const FadeIn = keyframes`
   }
 `;
 
-const LoadingAnim = keyframes`
-  0% {
-    content: ""
-  }
-  
-  25% {
-    content: "."
-  }
-  
-  50% {
-    content: ".."
-  }
-  
-  100% {
-    content: "..."
-  }
-`;
-
 const Arrow = styled.span`
   font-size: 0.8em;
 `;
 
 export const Text = styled.p`
-  font-size: 3em;
+  font-size: 2em;
   text-align: center;
   animation: ${FadeIn} 0.7s linear 1;
-`;
-
-const LoadingText = Text.extend`
-  color: #cc8;
-
-  &::after {
-    content: "";
-    animation: ${LoadingAnim} 2s linear infinite;
-  }
 `;
 
 const RiseText = Text.extend`
@@ -55,8 +28,6 @@ const RiseText = Text.extend`
 const FallText = Text.extend`
   color: red;
 `;
-
-export const Loading = () => <LoadingText>Loading</LoadingText>;
 
 const ArrowUp = () => <Arrow>&#129065;</Arrow>;
 
@@ -128,10 +99,15 @@ export const Background = props => (
   </Wrapper>
 );
 
-export const Data = styled.section``;
+export const Data = styled.section`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`;
 
 export const HistoryData = styled.div`
-  margin-top: 2em;
   padding: 0em 1em;
   text-align: center;
   color: rgb(67, 66, 80);
@@ -142,16 +118,20 @@ export const HistoryData = styled.div`
   & p {
     display: flex;
     justify-content: space-between;
+    font-weight: 400;
 
     & span:nth-child(2n) {
       color: rgb(255, 255, 255);
       letter-spacing: 0.05em;
+      font-weight: 900;
     }
   }
 `;
 
 export const Price = styled.div`
-  font-family: "Hack", "Fira Code", monospace;
+  margin-top: 2em;
+  font-family: "Press Start 2P", cursive;
+  font-weight: 700;
   color: white;
 
   & sup {

@@ -11,7 +11,7 @@ export default class Chart extends React.Component {
       <div>
         <AreaChart
           style={{ marginBottom: "-1em" }}
-          areaColors={["orange"]}
+          areaColors={["#B10DC9"]}
           interpolate={"cardinal"}
           width={this.state.windowWidth}
           height={200}
