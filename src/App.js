@@ -1,122 +1,78 @@
 import React, { Component, Fragment } from "react";
-import styled, { keyframes } from "styled-components";
+import { RingLoader } from "react-spinners";
+import "./index.css";
+import {
+  Price,
+  HistoryData,
+  Data,
+  Background,
+  Text,
+  Fall,
+  Rise
+} from "./styled";
+import formatPrice from "./utils";
 
-const FadeIn = keyframes`
-  from {
-    opacity: 0
-  }
-
-  to {
-    opacity: 1
-  }
-`;
-
-const LoadingAnim = keyframes`
-  0% {
-    content: ""
-  }
-  
-  25% {
-    content: "."
-  }
-  
-  50% {
-    content: ".."
-  }
-  
-  100% {
-    content: "..."
-  }
-`;
-
-const Arrow = styled.span`
-  font-size: 0.8em;
-`;
-
-const Text = styled.p`
-  font-size: 3em;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: ${FadeIn} 0.7s linear 1;
-`;
-
-const LoadingText = Text.extend`
-  color: #cc8;
-
-  &::after {
-    content: "";
-    animation: ${LoadingAnim} 2s linear infinite;
-  }
-`;
-
-const RiseText = Text.extend`
-  color: green;
-`;
-
-const FallText = Text.extend`
-  color: red;
-`;
-
-const Loading = () => <LoadingText>Loading</LoadingText>;
-
-const ArrowUp = () => <Arrow>&#129065;</Arrow>;
-
-const ArrowDown = () => <Arrow>&#129067;</Arrow>;
-
-const Rise = props => (
-  <RiseText>
-    <ArrowUp />
-    {props.children}
-  </RiseText>
-);
-
-const Fall = props => (
-  <FallText>
-    <ArrowDown />
-    {props.children}
-  </FallText>
-);
+import Chart from "./Chart";
 
 class App extends Component {
   state = {
+    history: [],
     data: [],
-    intervalId: {}
+    marketCap: {},
+    volume: {},
+    intervalId: {},
+    loading: true
   };
 
   getData = () => {
     fetch("https://api.coinmarketcap.com/v2/ticker/1/")
       .then(res => res.json())
       .then(data => {
-        console.log(
-          `data: ${data.data.quotes.USD.price}$ at ${new Date(
-            data.status.timestamp * 1000
-          )}`
-        );
-        data.data.quotes.USD.price ===
-        this.state.data[this.state.data.length - 1]
-          ? null
-          : this.setState({
-              data: [...this.state.data, data.data.quotes.USD.price]
-            });
+        if (this.state.data.length === 0) {
+          this.setState({
+            loading: false,
+            marketCap: data.data.quotes.USD.market_cap,
+            volume: data.data.quotes.USD.volume_24h,
+            data: [
+              {
+                x: data.data.quotes.USD.price,
+                y: data.metadata.timestamp
+              }
+            ]
+          });
+        } else if (
+          data.data.quotes.USD.price !==
+          this.state.data[this.state.data.length - 1].x
+        ) {
+          this.setState({
+            data: [
+              ...this.state.data,
+              { x: data.data.quotes.USD.price, y: data.metadata.timestamp }
+            ]
+          });
+        }
       })
       .catch(err => console.log(err));
   };
 
-  formatPrice = n => {
-    const options = {
-      style: "currency",
-      currency: "USD",
-      currencyDisplay: "symbol",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 2
-    };
-    return n.toLocaleString("en-US", options);
+  getHistory = () => {
+    fetch(
+      "https://min-api.cryptocompare.com/data/histominute?fsym=BTC&tsym=USD&limit=60&aggregate=3&e=CCCAGG"
+    )
+      .then(res => res.json())
+      .then(data => {
+        const arr = data.Data.map(value => {
+          return { x: value.time, y: value.close };
+        });
+        this.setState({
+          history: [...arr]
+        });
+      });
   };
 
   componentDidMount() {
-    const timer = setInterval(this.getData, 5000);
+    this.getHistory();
+    const timer = setInterval(this.getData, 10000);
     this.setState({ intervalId: timer });
   }
 
@@ -125,18 +81,72 @@ class App extends Component {
   }
 
   render() {
-    const current = this.state.data[this.state.data.length - 1];
-    const prev = this.state.data[this.state.data.length - 2];
+    const { data, history, marketCap, volume, loading } = this.state;
+    const next = data[data.length - 1];
+    const prev = data[data.length - 2];
 
-    if (this.state.data.length === 0) {
-      return <Loading />;
-    } else if (!prev || prev === current) {
-      return <Text>{this.formatPrice(current)}</Text>;
-    } else if (prev > current) {
-      return <Fall>{this.formatPrice(current)}</Fall>;
-    } else if (prev < current) {
-      return <Rise>{this.formatPrice(current)}</Rise>;
-    }
+    return (
+      <Background>
+        <Data>
+          {loading && (
+            <div
+              style={{
+                marginTop: "4em",
+                display: "flex",
+                justifyContent: "center"
+              }}
+            >
+              <RingLoader style={{}} color={"#B10DC9"} loading={loading} />
+            </div>
+          )}
+          {data.length !== 0 && (
+            <Fragment>
+              <Price>
+                {prev === undefined ? (
+                  <Text>
+                    <sup>$</sup>
+                    {formatPrice(next.x)}
+                  </Text>
+                ) : (
+                  <Fragment>
+                    {prev.x === next.x && (
+                      <Text>
+                        <sup>$</sup>
+                        {formatPrice(next.x)}
+                      </Text>
+                    )}
+                    {prev.x > next.x && (
+                      <Fall>
+                        <sup>$</sup>
+                        {formatPrice(next.x)}
+                      </Fall>
+                    )}
+                    {prev.x < next.x && (
+                      <Rise>
+                        <sup>$</sup>
+                        {formatPrice(next.x)}
+                      </Rise>
+                    )}
+                  </Fragment>
+                )}
+              </Price>
+              <HistoryData>
+                <p>
+                  <span>{"Market cap"}</span>
+                  <span>{`${formatPrice(marketCap)}$`}</span>
+                </p>
+                <p>
+                  <span>{"Volume 24h"}</span>
+                  <span>{`${formatPrice(volume)}$`}</span>
+                </p>
+              </HistoryData>
+            </Fragment>
+          )}
+
+          {history && <Chart data={history} />}
+        </Data>
+      </Background>
+    );
   }
 }
 
