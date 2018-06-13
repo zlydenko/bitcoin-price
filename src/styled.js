@@ -130,8 +130,8 @@ export const HistoryData = styled.div`
 
 export const Price = styled.div`
   margin-top: 2em;
-  font-family: "Press Start 2P", cursive;
-  font-weight: 700;
+  font-family: "Source Code Pro", monospace;
+  font-weight: 600;
   color: white;
 
   & sup {
